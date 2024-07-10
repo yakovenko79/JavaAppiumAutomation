@@ -12,6 +12,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 
 import java.net.URL;
+import java.util.List;
 
 public class FirstTest {
     private AppiumDriver driver;
@@ -99,6 +100,32 @@ public class FirstTest {
                 );
     }
 
+    @Test
+    public void testSearchArticlesAndClearWord() {
+        waitForElementAndClick(By.id("org.wikipedia:id/search_container"),
+                "Cant find search input",
+                5);
+        waitForElementAndSendKeys(By.xpath("//*[contains(@text, 'Search…')]"),
+                "Java",
+                "Cant find search input",
+                5);
+        waitForElementPresent(By.id("org.wikipedia:id/search_results_list"),
+                "Cant find list of articles",
+                10);
+        assertElementsArePresent(By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']"),
+                "Cant find articles",
+                10);
+        waitForElementAndClear(By.id("org.wikipedia:id/search_src_text"),
+                "Cant find search field",
+                5);
+        waitForElementNotPresent(By.xpath("//*[contains(@text, 'Java')]"),
+                "The ",
+                5);
+
+
+
+    }
+
     private WebElement waitForElementPresent(By by, String error_message, long timeoutInSeconds) {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
         wait.withMessage(error_message + "\n");
@@ -137,5 +164,12 @@ public class FirstTest {
         WebElement element = waitForElementPresent(by, error_message, timeoutInSeconds);
         String actualText = element.getAttribute("text");
         Assert.assertEquals(expectedText, actualText);
+    }
+
+    private void assertElementsArePresent(By by, String error_message, long timeoutInSeconds) {
+        WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
+        wait.withMessage(error_message + "\n");
+        List elements = driver.findElements(by);
+        Assert.assertTrue(elements.size() > 1);
     }
 }
