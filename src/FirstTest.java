@@ -16,6 +16,7 @@ import java.util.List;
 
 public class FirstTest {
     private AppiumDriver driver;
+    private String SEARCH = "Java";
 
     @Before
     public void setUp() throws Exception {
@@ -121,8 +122,25 @@ public class FirstTest {
         waitForElementNotPresent(By.xpath("//*[contains(@text, 'Java')]"),
                 "The ",
                 5);
+    }
 
-
+    @Test
+    public void testWordsInSearch() {
+        waitForElementAndClick(By.id("org.wikipedia:id/search_container"),
+                "Cant find search input",
+                5);
+        waitForElementAndSendKeys(By.xpath("//*[contains(@text, 'Search…')]"),
+                "Java",
+                "Cant find search input",
+                5);
+        waitForElementPresent(By.id("org.wikipedia:id/search_results_list"),
+                "Cant find list of articles",
+                10);
+        assertElementsContainsWord(By.id("org.wikipedia:id/search_results_list"),
+                By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']//*[@resource-id='org.wikipedia:id/page_list_item_title']"),
+                SEARCH,
+                "Cant find articles",
+                10);
 
     }
 
@@ -169,7 +187,16 @@ public class FirstTest {
     private void assertElementsArePresent(By by, String error_message, long timeoutInSeconds) {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
         wait.withMessage(error_message + "\n");
-        List elements = driver.findElements(by);
+        List<WebElement> elements = driver.findElements(by);
+        System.out.println(elements);
         Assert.assertTrue(elements.size() > 1);
+    }
+
+    private void assertElementsContainsWord(By byLst, By byElm, String word, String error_message, long timeoutInSeconds) {
+        WebElement elements = waitForElementPresent(byLst, error_message, timeoutInSeconds);
+        for (WebElement element: elements.findElements(byElm)) {
+            String text = element.getText();
+            Assert.assertTrue("Article doesnt contain word", text.contains(word));
+        }
     }
 }
