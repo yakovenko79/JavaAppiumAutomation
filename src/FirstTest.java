@@ -410,7 +410,7 @@ public class FirstTest {
         waitForElementNotPresent(By.xpath(locator_article_about_java_programming_language),
                 "Removed article is found",
                 5);
-        waitForElementPresent(By.xpath("//*[@text='Island in Indonesia']"),
+        waitForElementPresent(By.xpath(locator_article_about_java_island_in_list),
                 "Cant find article about Java island",
                 5);
         String article_text_in_folder = getElementDescription(By.xpath(locator_article_about_java_island_in_list));
@@ -419,11 +419,23 @@ public class FirstTest {
                 3);
         String article_text_on_title = getElementDescription(By.xpath("//android.webkit.WebView[@text=\"Java\"]/android.view.View/android.view.View[1]/*[@text='Island in Indonesia']"));
         Assert.assertEquals("Text about Java island isnt equal", article_text_in_folder, article_text_on_title);
+    }
 
-
-
-
-
+    @Test
+    public void openArticleWithoutDelay() {
+        skipOnboarding();
+        waitForElementAndClick(By.id("org.wikipedia:id/search_container"),
+                "Cant find search input",
+                5);
+        waitForElementAndSendKeys(By.id("org.wikipedia:id/search_src_text"),
+                "Java",
+                "Cant find search input",
+                5);
+        waitForElementAndClick(By.xpath("//*[@text='Java (programming language)']"),
+                "Cant find search input",
+                5);
+        assertElementPresent(By.xpath("//android.widget.TextView[@text=\"Java (programming language)\"]"),
+                "Cant find the title of article");
     }
 
 
@@ -573,5 +585,9 @@ public class FirstTest {
         WebElement element = driver.findElement(by);
         String element_text = element.getText();
         return element_text;
+    }
+
+    private WebElement assertElementPresent(By by, String error_message) {
+        return waitForElementPresent(by, error_message, 0);
     }
 }
