@@ -15,6 +15,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FirstTest {
@@ -337,9 +338,92 @@ public class FirstTest {
                 "Cant find search input",
                 5);
         driver.runAppInBackground(2);
-        waitForElementPresent(By.xpath("//*[@resource-id=\"org.wikipedia:id/page_list_item_title\"][@text='Java (programming language)']"),
+        waitForElementPresent(By.xpath("//*[@resource-id=\"org.wikipedia:id/list_of_lists\"]"),
                 "Cant find article after returning from background",
                 5);
+    }
+
+    @Test
+    public void saveTwoArticlesToTheFolderAndRemoveOneOfThem() {
+        skipOnboarding();
+        waitForElementAndClick(By.id("org.wikipedia:id/search_container"),
+                "Cant find search input",
+                5);
+        waitForElementAndSendKeys(By.id("org.wikipedia:id/search_src_text"),
+                "Java",
+                "Cant find search input",
+                5);
+        waitForElementAndClick(By.xpath("//*[@text='Java (programming language)']"),
+                "Cant find search input",
+                5);
+        waitForElementPresent(By.xpath("//android.widget.TextView[@text=\"Java (programming language)\"]"),
+                "Cant find article title",
+                15);
+        waitForElementAndClick(By.id("org.wikipedia:id/page_save"),
+                "Cant find Save button",
+                5);
+        waitForElementAndClick(By.id("org.wikipedia:id/snackbar_action"),
+                "Catn find Add to list btn",
+                3);
+        String name_of_folder = "TestList";
+        waitForElementAndSendKeys(By.id("org.wikipedia:id/text_input"),
+                name_of_folder,
+                "Cant find field for input name of list",
+                3);
+        waitForElementAndClick(By.id("android:id/button1"),
+                "Cant find OK btn",
+                3);
+        waitForElementAndClick(By.xpath("//android.widget.ImageButton[@content-desc='Navigate up']"),
+                "Cant find left arrow btn",
+                5);
+        waitForElementAndClick(By.xpath("//*[@resource-id=\"org.wikipedia:id/page_list_item_description\"][@text='Island in Indonesia']"),
+                "Cant find article about Java Island",
+                5);
+        waitForElementPresent(By.xpath("//android.widget.TextView[@text=\"Island in Indonesia\"]"),
+                "Cant find article description",
+                15);
+        waitForElementAndClick(By.id("org.wikipedia:id/page_save"),
+                "Cant find Save btn",
+                5);
+        waitForElementAndClick(By.id("org.wikipedia:id/snackbar_action"),
+                "Catn find Add to list btn",
+                3);
+        waitForElementAndClick(By.id("org.wikipedia:id/item_title_container"),
+                "Cant find " + name_of_folder + " folder",
+                5);
+        waitForElementAndClick(By.id("org.wikipedia:id/snackbar_action"),
+                "Catn find View list btn",
+                3);
+
+        String locator = "//*[@class='android.widget.FrameLayout']/*[@class='android.view.ViewGroup'][@resource-id='org.wikipedia:id/page_list_item_container']";
+        String locator_article_about_java_programming_language = "//*[@text='Java (programming language)']";
+        String locator_article_about_java_island_in_list = "//*[@text='Island in Indonesia']";
+        int amount_of_expected_articles = 2;
+        Assert.assertTrue("Amount of articles are not " + amount_of_expected_articles + " but equals to " + getAmountOfElements(By.xpath(locator)),
+                getAmountOfElements(By.xpath(locator)) == amount_of_expected_articles);
+
+
+        swipeElementToLeft(By.xpath(locator_article_about_java_programming_language),
+                "Cant find this article");
+        Assert.assertTrue("Amount of articles are not " + amount_of_expected_articles + " but equals to " + getAmountOfElements(By.xpath(locator)),
+                getAmountOfElements(By.xpath(locator)) == amount_of_expected_articles - 1);
+        waitForElementNotPresent(By.xpath(locator_article_about_java_programming_language),
+                "Removed article is found",
+                5);
+        waitForElementPresent(By.xpath("//*[@text='Island in Indonesia']"),
+                "Cant find article about Java island",
+                5);
+        String article_text_in_folder = getElementDescription(By.xpath(locator_article_about_java_island_in_list));
+        waitForElementAndClick(By.xpath(locator_article_about_java_island_in_list),
+                "Cant find article about Java island",
+                3);
+        String article_text_on_title = getElementDescription(By.xpath("//android.webkit.WebView[@text=\"Java\"]/android.view.View/android.view.View[1]/*[@text='Island in Indonesia']"));
+        Assert.assertEquals("Text about Java island isnt equal", article_text_in_folder, article_text_on_title);
+
+
+
+
+
     }
 
 
@@ -471,6 +555,7 @@ public class FirstTest {
         return elements.size();
     }
 
+
     private void assertElementNotPresent(By by, String error_message) {
         int amount_of_elements = getAmountOfElements(by);
         if (amount_of_elements > 1) {
@@ -482,5 +567,11 @@ public class FirstTest {
     private String waitForElementAndGetAttribute(By by, String attribute, String error_message, long timeoutInSeconds) {
         WebElement element = waitForElementPresent(by, error_message, timeoutInSeconds);
         return element.getAttribute(attribute);
+    }
+
+    private String getElementDescription(By by) {
+        WebElement element = driver.findElement(by);
+        String element_text = element.getText();
+        return element_text;
     }
 }
