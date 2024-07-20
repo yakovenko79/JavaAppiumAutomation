@@ -299,29 +299,33 @@ public class FirstTest {
                 "text",
                 "Cant find title of article",
                 15);
-        driver.rotate(ScreenOrientation.LANDSCAPE);
-        String tite_after_rotation = waitForElementAndGetAttribute(
-                By.xpath("//*[@text=\"Java (programming language)\"]"),
-                "text",
-                "Cant find title of article",
-                15);
-        driver.rotate(ScreenOrientation.LANDSCAPE);
+        try {
+            driver.rotate(ScreenOrientation.LANDSCAPE);
+            String tite_after_rotation = waitForElementAndGetAttribute(
+                    By.xpath("//*[@text=\"Java (programming language)\"]"),
+                    "text",
+                    "Cant find title of article",
+                    15);
+            driver.rotate(ScreenOrientation.LANDSCAPE);
 
-        Assert.assertEquals(
-                "Article title have been changed after rotation",
-                tite_before_rotation,
-                tite_after_rotation);
+            Assert.assertEquals(
+                    "Article title have been changed after rotation",
+                    tite_before_rotation,
+                    tite_after_rotation);
 
-        driver.rotate(ScreenOrientation.PORTRAIT);
-        String tite_after_second_rotation = waitForElementAndGetAttribute(
-                By.xpath("//*[@text=\"Java (programming language)\"]"),
-                "text",
-                "Cant find title of article",
-                15);
-        Assert.assertEquals(
-                "Article title have been changed after rotation",
-                tite_before_rotation,
-                tite_after_second_rotation);
+            driver.rotate(ScreenOrientation.PORTRAIT);
+            String tite_after_second_rotation = waitForElementAndGetAttribute(
+                    By.xpath("//*[@text=\"Java (programming language)\"]"),
+                    "text",
+                    "Cant find title of article",
+                    15);
+            Assert.assertEquals(
+                    "Article title have been changed after rotation",
+                    tite_before_rotation,
+                    tite_after_second_rotation);
+        } finally {
+            driver.rotate(ScreenOrientation.PORTRAIT);
+        }
     }
 
     @Test
