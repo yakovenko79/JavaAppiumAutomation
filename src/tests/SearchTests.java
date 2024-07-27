@@ -5,9 +5,16 @@ import lib.ui.SearchPageObject;
 import org.junit.Test;
 
 public class SearchTests extends CoreTestCase {
+
+    @Test
+    public void testSearchFieldHasText() {
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject.assertSearchFieldHasText();
+    }
+
+
     @Test
     public void testSearch() {
-//        MainPageObject.skipOnboarding();
         SearchPageObject SearchPageObject = new SearchPageObject(driver);
         SearchPageObject.initSeachInput();
         SearchPageObject.typeSearchLine("Java");
@@ -17,7 +24,6 @@ public class SearchTests extends CoreTestCase {
 
     @Test
     public void testCancelSearch() {
-//        MainPageObject.skipOnboarding();
         SearchPageObject SearchPageObject = new SearchPageObject(driver);
         SearchPageObject.initSeachInput();
         SearchPageObject.typeSearchLine("Java");
@@ -46,5 +52,23 @@ public class SearchTests extends CoreTestCase {
         SearchPageObject.typeSearchLine(search_line);
         SearchPageObject.waitForEmptyResultsLabel();
         SearchPageObject.assertThereIsNoResultOfSearch();
+    }
+
+    @Test
+    public void testSearchArticlesAndClearWord() {
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject.initSeachInput();
+        SearchPageObject.typeSearchLine("Java");
+        SearchPageObject.assertSearchListOfItemsResults();
+        SearchPageObject.clearInputSearchItem();
+        SearchPageObject.waitForSearchFieldIsEmpty();
+    }
+
+    @Test
+    public void testWordsInSearch() {
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject.initSeachInput();
+        SearchPageObject.typeSearchLine("Java");
+        SearchPageObject.assertSearchResultsContainInputWord();
     }
 }

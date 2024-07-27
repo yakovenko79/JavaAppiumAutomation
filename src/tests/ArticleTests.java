@@ -21,7 +21,6 @@ public class ArticleTests extends CoreTestCase {
 
     @Test
     public void testSwipeArticle() {
-//        MainPageObject.skipOnboarding();
         SearchPageObject SearchPageObject = new SearchPageObject(driver);
         SearchPageObject.initSeachInput();
         SearchPageObject.typeSearchLine("Appium");
@@ -31,4 +30,17 @@ public class ArticleTests extends CoreTestCase {
         ArticlePageObject.waitForAppiumTitleElement();
         ArticlePageObject.swipeToFooter();
     }
+
+    @Test
+    public void testOpenArticleWithoutDelay() {
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject.initSeachInput();
+        SearchPageObject.typeSearchLine("Appium");
+        SearchPageObject.clickByArticleWithSubstring("Automation for Apps");
+
+        ArticlePageObject ArticlePageObject = new ArticlePageObject(driver);
+        ArticlePageObject.waitForTitleElementWithoutDelay("Appium");
+    }
+
+
 }

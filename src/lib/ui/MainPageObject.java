@@ -33,7 +33,7 @@ public class MainPageObject {
 
 
     public WebElement waitForElementPresent(By by, String error_message) {
-        return waitForElementPresent(by, error_message, 5);
+        return waitForElementPresent(by, error_message, 0);
     }
 
     public WebElement waitForElementAndClick(By by, String error_message, long timeoutInSeconds) {
@@ -76,7 +76,6 @@ public class MainPageObject {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
         wait.withMessage(error_message + "\n");
         List<WebElement> elements = driver.findElements(by);
-        System.out.println(elements);
         Assert.assertTrue(elements.size() > 1);
     }
 
@@ -166,4 +165,5 @@ public class MainPageObject {
     public WebElement assertElementPresent(By by, String error_message) {
         return waitForElementPresent(by, error_message, 0);
     }
+
 }
