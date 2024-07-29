@@ -15,7 +15,8 @@ public class SearchPageObject extends MainPageObject {
             LIST_OF_ITEMS_TITLE = "//*[@resource-id='org.wikipedia:id/page_list_item_title']",
             INPUTTED_SEARCH_ITEM = "org.wikipedia:id/search_src_text",
             NAME_INPUTTED_SEARCH_ITEM = "//*[contains(@text, 'Java')]",
-            ARTICLES_IN_SEARCH_LIST = "//*[@resource-id='org.wikipedia:id/page_list_item_container']//*[@resource-id='org.wikipedia:id/page_list_item_title']";
+            ARTICLES_IN_SEARCH_LIST = "//*[@resource-id='org.wikipedia:id/page_list_item_container']//*[@resource-id='org.wikipedia:id/page_list_item_title']",
+            ARTICLE_TITLE_AND_DESCRIPTION_TPL = "//android.view.ViewGroup[android.widget.TextView[@resource-id='org.wikipedia:id/page_list_item_title' and @text=\"{TITLE}\"] and android.widget.TextView[@resource-id='org.wikipedia:id/page_list_item_description' and @text=\"{DESCRIPTION}\"]]";
 
     public SearchPageObject(AppiumDriver driver) {
         super(driver);
@@ -25,7 +26,14 @@ public class SearchPageObject extends MainPageObject {
     private static String getResultSearchElement(String substring) {
         return SEARCH_RESULT_BY_SUBSTRING_TPL.replace("{SUBSTRING}", substring);
     }
+
+    private static String getResultSearchElements(String title, String description) {
+        String article = ARTICLE_TITLE_AND_DESCRIPTION_TPL.replace("{TITLE}", title);
+        return article.replace("{DESCRIPTION}", description);
+
+    }
     /*TEMPLATES METHODS*/
+
     public void initSeachInput() {
         this.waitForElementPresent(By.xpath(SEARCH_INIT_ELEMENT), "Cannot find search input after clicking search init element");
         this.waitForElementAndClick(By.xpath(SEARCH_INIT_ELEMENT), "Cannot find and click search init element", 5);
@@ -106,5 +114,12 @@ public class SearchPageObject extends MainPageObject {
                 "Java",
                 "Cant find articles",
                 10);
+    }
+
+    public void waitForElementByTitleAndDescription(String title, String description) {
+        String finalLocator = getResultSearchElements(title, description);
+        waitForElementPresent(By.xpath(finalLocator),
+                "Статья с заголовком " + title + " и описанием " + description + " не найдена.",
+                15);
     }
 }
